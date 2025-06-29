@@ -1,9 +1,20 @@
 // Initial quote array
-const quotes = [
+
+let quotes = [];
+// Load quotes from localstorage (if any)
+function loadQuotes(){
+  const stored = localStorage.getItem("quotes");
+  quotes = stored ? JSON.parse(stored) : [
     { text: "Do not mistaken education for intelligence, you can have a PHd but be an idiot", category: "Motivation"},
     { text: "Simplicity is the soul of efficiency", category: "Productivity"},
     { text: "Success is not final, failure is not fatal: It is the courage to continue that counts", category: "Inspiration"}
-];
+  ];
+}
+
+// Saving quotes to localStorage
+function saveQuotes() {
+  localStorage.setItem("quotes", JSON.stringify(quotes));
+}
 
 // Function to display a random quote
 function showRandomQuote() {
@@ -15,7 +26,11 @@ function showRandomQuote() {
     <blockquote>"${quote.text}"</blockquote>
     <p><em>Category: ${quote.category}</em></p>
     `;
+    // Storing last shown quote to sessionStorage
+    sessionStorage.setItemt("lastQuote", JSON.stringify(quote));
 }
+
+
 
 // Function to create and display the form to add new quotes
 function createAddQuoteForm() {
@@ -60,8 +75,52 @@ function createAddQuoteForm() {
   });
 }
 
+// Export quotes as JSON file
+function exportQuotes() {
+  const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "quotes.json";
+  link.click();
+}
+
+// Importing from JSON file
+function importQuotes(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (Array.isArray(imported)) {
+        quotes = imported;
+        saveQuotes();
+        alert("Quotes imported successfully!");
+      } else {
+        alert("Invalid JSON format.");
+      }
+    } catch (err) {
+      alert("Failed to read file.");
+    }
+  };
+  reader.readAsText(file);
+
+}
 // Run on page load
 document.addEventListener("DOMContentLoaded", () => {
   showRandomQuote();
   createAddQuoteForm();
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadQuotes();
+  loadLastViewedQuote();
+  createAddQuoteForm();
+
+  document.getElementById("random-btn").addEventListener("click", showRandomQuote);
+  document.getElementById("export-btn").addEventListener("click", exportQuotes);
+  document.getElementById("import-file").addEventListener("change", importQuotes);
+})
