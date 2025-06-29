@@ -57,6 +57,24 @@ function populateCategories() {
 function filterQuotes(selectedCategory) {
   localStorage.setItem("selectedCategory", selectedCategory);
   showRandomQuote();
+  const displayArea = document.getElementById('quote-display');
+  let filteredQuotes = quotes;
+
+  if (selectedCategory && selectedCategory !== "All") {
+    filteredQuotes = quotes.filter(q => q.category === selectedCategory);
+  }
+
+  if (filteredQuotes.length > 0) {
+    const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+    const quote = filteredQuotes[randomIndex];
+    displayArea.innerHTML = `
+      <blockquote>"${quote.text}"</blockquote>
+      <p><em>Category: ${quote.category}</em></p>
+    `;
+    sessionStorage.setItem("lastQuote", JSON.stringify(quote));
+  } else {
+    displayArea.innerHTML = "<p>No quotes found for this category.</p>";
+  }
 }
 
 
