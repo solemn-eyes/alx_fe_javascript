@@ -35,9 +35,9 @@ function populateCategories() {
   const dropdown = document.getElementById("category-filter");
   dropdown.innerHTML = ""; // This clears old options
 
-  const categories = ["All", ...new Set(quotes.map(q => q.category))];
+  const categoryFilter = ["All", ...new Set(quotes.map(q => q.category))];
 
-  categories.forEach(category => {
+  categoryFilter.forEach(category => {
     const option = document.createElement("option");
     option.value = category;
     option.textContent = category;
