@@ -30,6 +30,34 @@ function showRandomQuote() {
     sessionStorage.setItemt("lastQuote", JSON.stringify(quote));
 }
 
+// Populating dropdown from unique categories
+function populateCategories() {
+  const dropdown = document.getElementById("category-filter");
+  dropdown.innerHTML = ""; // This clears old options
+
+  const categories = ["All", ...new Set(quotes.map(q => q.category))];
+
+  categories.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    dropdown.appendChild(option);
+  }
+  );
+
+    // Restore saved filter
+  const savedFilter = localStorage.getItem("selectedCategory");
+  if (savedFilter) {
+    dropdown.value = savedFilter;
+    filterQuotes(savedFilter);
+  }
+}
+
+// Filter quotes by selected category
+function filterQuotes(selectedCategory) {
+  localStorage.setItem("selectedCategory", selectedCategory);
+  showRandomQuote();
+}
 
 
 // Function to create and display the form to add new quotes
@@ -123,4 +151,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("random-btn").addEventListener("click", showRandomQuote);
   document.getElementById("export-btn").addEventListener("click", exportQuotes);
   document.getElementById("import-file").addEventListener("change", importQuotes);
+
+  // Dropdown change listener
+  document.getElementById("category-filter").addEventListener("change", (e) =>
+  {
+    filterQuotes(e.target.value);
+  });
 })
