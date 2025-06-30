@@ -126,4 +126,53 @@ document.addEventListener("DOMContentLoaded", () => {
   populateCategories();
   createAddQuoteForm();
   loadLastViewedQuote();
+
+
+function showNotification(message) {
+  const note = document.getElementById("notification");
+  note.textContent = message;
+  note.style.display = "block";
+
+  setTimeout(() => {
+    note.style.display = "none";
+  }, 4000);
+}
+
+const SERVER_URL = "https://mocki.io/v1/your-fake-id";
+
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch(SERVER_URL)
+    if (!response.ok) throw new Error("Failed to  fetch server quotes");
+
+    const serverQuotes = await response.json();
+    let update = false;
+
+    // Conflict resolution: replace local qoute if exact text exits
+    serverQuotes.forEach(serverQuote => {
+      const exits = quotes.find(q => q.text === serverQuote.text);
+      if (!exits) {
+        quotes.push(serverQuote);
+        updated = true;
+      }
+    });
+
+    if (updated) {
+      saveQuotes();
+      populateCategories();
+      showNotification("Qoutes synced with server.");
+
+    }
+  } catch (error) {
+    showNotification("Failed to sync with server.");
+    console.error(error);
+  }
+}
+
+// Simulating periodic server sync
+setInterval(fetchQuotesFromServer, 60000); // does for every 60 seconds
+
+
+
 });
+
