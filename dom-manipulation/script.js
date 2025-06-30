@@ -138,7 +138,7 @@ function showNotification(message) {
   }, 4000);
 }
 
-const SERVER_URL = "https://mocki.io/v1/your-fake-id";
+const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 
 async function fetchQuotesFromServer() {
   try {
