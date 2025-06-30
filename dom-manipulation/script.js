@@ -61,8 +61,8 @@ function showRandomQuote() {
 
 // === Filter quotes when dropdown is changed ===
 function filterQuotes() {
-  const selected = document.getElementById("categoryFilter").value;
-  localStorage.setItem("selectedCategory", selected);
+  const quoteDisplay = document.getElementById("categoryFilter").value;
+  localStorage.setItem("selectedCategory", quoteDisplay);
   showRandomQuote(); // Show one matching quote
 }
 
